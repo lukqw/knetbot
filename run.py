@@ -4,6 +4,8 @@ from parse import *
 from bot import *
 from threading import Thread
 import sys
+import urllib.request
+import json
 
 
 class run():
@@ -19,6 +21,7 @@ class run():
         while True:
             buffer = (self.bot.socket.recv(4096)).decode("utf-8", errors="ignore")
             temp = buffer.split("\r\n")
+            self.getTwitchApi("ninja")
             buffer = temp.pop()
 
             for line in temp:
@@ -57,6 +60,15 @@ class run():
                                 self.bot.say(par.channel, par.user + " is cool! You also wrote: '" + quicktemp + "' Kappa")
                             else:
                                 self.bot.say(par.channel, par.user + " is cool!")
+
+                        if par.message.startswith("!get"):
+                            quicktemp = None
+
+                            if len(par.message) > 4:
+                                quicktemp = par.message[par.message.index(" ") + 1:]
+                                test = "" + self.getTwitchApi(quicktemp)[1:]
+                                self.bot.say(par.channel, "\n Test: " + test)
+
 
                         if par.message.startswith("!delcomm"):
                             if par.user in ADMIN:
@@ -183,6 +195,23 @@ class run():
                 f.close()
                 return
 
+    def getTwitchApi(self, target_channel):
+        url_userlogin = "https://api.twitch.tv/helix/streams?user_login=" + target_channel
+        req_userlogin = urllib.request.Request(url_userlogin)
+        req_userlogin.add_header("Client-ID", self.getClientID())
+        req_userlogin.add_header("Authorization", "OAuth " + PASS[6:])
+        html_response = urllib.request.urlopen(req_userlogin).read().decode('utf-8')
+        json_response = json.loads(html_response)
+        #Should Print Value of Key -> json_response[type]
+        #print(json_response)
+        return json_response
+
+    def getClientID(self):
+        url = "https://id.twitch.tv/oauth2/validate"
+        req = urllib.request.Request(url)
+        req.add_header("Authorization", "OAuth " + PASS[6:])
+        contents = urllib.request.urlopen(req)
+        return contents.read()[14:45]
 
 run = run()
 Thread(target=run.listen).start()
