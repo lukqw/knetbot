@@ -46,6 +46,18 @@ class run():
                                 except:
                                     self.bot.say(par.channel, "error adding command")
 
+                        if par.message.startswith("!cool"):
+
+                            quicktemp = None
+
+                            if len(par.message) > 5:
+                                quicktemp = par.message[par.message.index(" ")+1:]
+
+                            if quicktemp != None:
+                                self.bot.say(par.channel, par.user + " is cool! You also wrote: '" + quicktemp + "' Kappa")
+                            else:
+                                self.bot.say(par.channel, par.user + " is cool!")
+
                         if par.message.startswith("!delcomm"):
                             if par.user in ADMIN:
                                 try:
