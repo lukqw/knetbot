@@ -21,7 +21,6 @@ class run():
         while True:
             buffer = (self.bot.socket.recv(4096)).decode("utf-8", errors="ignore")
             temp = buffer.split("\r\n")
-            self.getTwitchApi("OverwatchLeague")
             buffer = temp.pop()
 
             for line in temp:
@@ -64,10 +63,11 @@ class run():
                         if par.message.startswith("!get"):
 
                             if len(par.message) > 4:
-                                quicktemp = par.message[par.message.index(" ") + 1:]
-                                print(quicktemp)
-                                test = "" + self.getTwitchApi(quicktemp)
-                                self.bot.say(par.channel, "The Api returned: " + test)
+                                parsed_args = par.message[par.message.index(" ") + 1:]
+                                parsed_args = parsed_args.split(" ", 2)
+                                api_stream_r = self.getTwitchApi(parsed_args[0])
+                                requested = parsed_args[1]
+                                self.bot.say(par.channel, "You requested '" + requested + "'. Here's the result: " + api_stream_r['data'][0][''+requested])
                             else:
                                 self.bot.say(par.channel, "Yesn't")
 
@@ -203,10 +203,7 @@ class run():
         req_userlogin.add_header("Client-ID", self.getClientID())
         req_userlogin.add_header("Authorization", "OAuth " + PASS[6:])
         html_response = urllib.request.urlopen(req_userlogin).read().decode("UTF-8")
-
-        #should work some day
-        #temp = html_response['data'][0]['id']
-        #print(temp)
+        html_response = json.loads(html_response)
 
         return html_response
 
