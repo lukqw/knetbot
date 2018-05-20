@@ -21,7 +21,7 @@ class run():
         while True:
             buffer = (self.bot.socket.recv(4096)).decode("utf-8", errors="ignore")
             temp = buffer.split("\r\n")
-            self.getTwitchApi("ninja")
+            self.getTwitchApi("OverwatchLeague")
             buffer = temp.pop()
 
             for line in temp:
@@ -62,12 +62,14 @@ class run():
                                 self.bot.say(par.channel, par.user + " is cool!")
 
                         if par.message.startswith("!get"):
-                            quicktemp = None
 
                             if len(par.message) > 4:
                                 quicktemp = par.message[par.message.index(" ") + 1:]
-                                test = "" + self.getTwitchApi(quicktemp)[1:]
-                                self.bot.say(par.channel, "\n Test: " + test)
+                                print(quicktemp)
+                                test = "" + self.getTwitchApi(quicktemp)
+                                self.bot.say(par.channel, "The Api returned: " + test)
+                            else:
+                                self.bot.say(par.channel, "Yesn't")
 
 
                         if par.message.startswith("!delcomm"):
@@ -200,11 +202,13 @@ class run():
         req_userlogin = urllib.request.Request(url_userlogin)
         req_userlogin.add_header("Client-ID", self.getClientID())
         req_userlogin.add_header("Authorization", "OAuth " + PASS[6:])
-        html_response = urllib.request.urlopen(req_userlogin).read().decode('utf-8')
-        json_response = json.loads(html_response)
-        #Should Print Value of Key -> json_response[type]
-        #print(json_response)
-        return json_response
+        html_response = urllib.request.urlopen(req_userlogin).read().decode("UTF-8")
+
+        #should work some day
+        #temp = html_response['data'][0]['id']
+        #print(temp)
+
+        return html_response
 
     def getClientID(self):
         url = "https://id.twitch.tv/oauth2/validate"
