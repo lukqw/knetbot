@@ -1,3 +1,4 @@
+from twitchApi import *
 from config import CHAN, BOTS, ADMIN
 from command import *
 from parse import *
@@ -67,10 +68,9 @@ class run():
                                 parsed_args = parsed_args.split(" ", 2)
                                 api_stream_r = self.getTwitchApi(parsed_args[0])
                                 requested = parsed_args[1]
-                                self.bot.say(par.channel, "You requested '" + requested + "'. Here's the result: " + api_stream_r['data'][0][''+requested])
+                                self.bot.say(par.channel, "You requested '" + requested + "'. Here's the result: " + api_stream_r['data'][0][requested])
                             else:
                                 self.bot.say(par.channel, "Yesn't")
-
 
                         if par.message.startswith("!delcomm"):
                             if par.user in ADMIN:
