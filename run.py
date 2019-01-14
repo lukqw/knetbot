@@ -61,6 +61,14 @@ class run():
                                         co += comms.trigger + ", "
                             self.bot.say(par.channel, co[0:len(co) - 2])
 
+                        if par.message.startswith("!chat"):
+                            usedbot = par.message.split(" #", 1)[1].split(" ")[0]
+                            if NICK == usedbot:
+                                channel123 = par.message.split(" +", 1)[1].split(" ")[0]
+                                message123 = par.message.split(" -", 1)[1]
+                                self.bot.join(channel123)
+                                self.bot.say(channel123, message123) 
+
                         for comm in self.commandlist:
                             if par.message.startswith(comm.trigger + " ") or par.message == comm.trigger:
                                 if (par.channel in comm.channels) or comm.channels[0] == "all":
